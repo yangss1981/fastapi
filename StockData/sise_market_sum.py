@@ -3,7 +3,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
+#url = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0&page=1"
+url = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1&page=1"
 
 # 페이지 데이터 조회
 res = requests.get(url)
