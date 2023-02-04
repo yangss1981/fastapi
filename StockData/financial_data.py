@@ -44,6 +44,10 @@ def getStockCropOfAll(stockType) :
     return listStockCropData
     print("## 종목 정보 조회 종료 ####################")
 
+##################################################################
+
+# 207940  /  PBR  /  2020.12  /  11.89
+financialData = []
 stock_corp = getStockCropOfAll(KOSPI)
 for index, stock in enumerate(stock_corp):
     # a tag 내에서 "href" 속성값을 가져온다. 
@@ -73,7 +77,15 @@ for index, stock in enumerate(stock_corp):
 
         for dateIdx, date in enumerate(listDate) :
             if date != '' :
-                print(companyCode, " / ", ParamEngList[idx], " / ", date, " / ", value_param[dateIdx])
+                # print(companyCode, " / ", ParamEngList[idx], " / ", date, " / ", value_param[dateIdx])
+                tempFinancialData = {}
+                tempFinancialData['COMPANY_CODE'] = companyCode
+                tempFinancialData['ITEM_CODE'] = ParamEngList[idx]
+                tempFinancialData['DATE'] = date.replace('.', '')[0:6]
+                tempFinancialData['ITEM_VALUE'] = value_param[dateIdx]
+                financialData.append(tempFinancialData)
 
     if index >= 3 :
         break
+
+print(financialData)
