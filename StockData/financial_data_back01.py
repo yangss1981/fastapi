@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
-KOSPI = 0
-KOSDAQ = 1
+from sise_market_sum import *
 
 def getDataOfParam(param):
      sub_tbody = sub_soup.find("table", attrs={"class": "tb_type1 tb_num tb_type1_ifrs"}).find("tbody")
@@ -14,30 +12,14 @@ def getDataOfParam(param):
      print(sub_title, " : ",value_param)
      return value_param 
 
-def getStockCropOfAll(stockType) :
-    listStockCropData = []
-    pageIndex = 1
-    print("## 종목 정보 조회 시작 ####################")
-    while True : 
-        url = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=" + str(stockType) + "&page=" + str(pageIndex)
-        res = requests.get(url)
-        soup = BeautifulSoup(res.text, 'lxml')
-        # print (soup)
-        stock_corp = soup.find("table", attrs={"class": "type_2"}).find("tbody").find_all("a", attrs={"class": "tltle"})
-        if len(stock_corp) <= 1 :
-            print("This is 마지막 페이지")
-            break
-        print("This is a result of [" + url + "]")
-        #print(stock_corp)
-        pageIndex = pageIndex + 1
-        listStockCropData.extend(stock_corp)
-        break
-    
-    return listStockCropData
-    print("## 종목 정보 조회 종료 ####################")
+url = "https://finance.naver.com/sise/sise_market_sum.nhn"
+res = requests.get(url)
+soup = BeautifulSoup(res.text, 'lxml')
+# print (soup)
+stockTop50_corp = soup.find("table", attrs={"class": "type_2"}).find("tbody").find_all("a", attrs={"class": "tltle"})
+print(stockTop50_corp)
 
-stock_corp = getStockCropOfAll(KOSPI)
-for index, stock in enumerate(stock_corp):
+for index, stock in enumerate(stockTop50_corp):
     # a tag 내에서 "href" 속성값을 가져온다. 
     link = "https://finance.naver.com/"+stock["href"]     
 
