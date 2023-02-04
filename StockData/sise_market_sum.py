@@ -7,7 +7,16 @@ KOSPI = 0
 KOSDAQ = 1
 
 # 테이블 헤더 ####################
-# ['종목코드', '종목명', '현재가', '전일비', '등락률', '액면가', '시가총액', '상장주식수', '외국인비율', '거래량', 'PER', 'ROE', '토론실']          
+# ['종목코드', '종목명', '현재가'
+#  , '전일비', '등락률', '액면가'
+#  , '시가총액', '상장주식수', '외국인비율'
+#  , '거래량', 'PER', 'ROE', '토론실']          
+
+# ['ITEM_CODE','ITEM_NAME','PRESENT_PRICE'
+#  ,'PREVIOUS_DAY_RATIO','FLUCTUATION_RATE','FACE_VALUE'
+#  ,'MARKET_CAPITALIZATION','NUMBER_OF_LISTED_SHARES','PERCENTAGE_OF_FOREIGNERS'
+#  ,'VOLUME_OF_TRANSACTION','PER','ROE','DISCUSSION_ROOM']
+
 #################################
 def getSiseMarketSumOfALL(stockType):
      listSiseMarketSumData = []

@@ -46,46 +46,50 @@ def getStockCropOfAll(stockType) :
 
 ##################################################################
 
-# 207940  /  PBR  /  2020.12  /  11.89
-financialData = []
-stock_corp = getStockCropOfAll(KOSPI)
-for index, stock in enumerate(stock_corp):
-    # a tag 내에서 "href" 속성값을 가져온다. 
-    link = "https://finance.naver.com/"+stock["href"]  
+if __name__=="__main__":
+    # KOSPI = 0
+    # KOSDAQ = 1
+    # 207940  /  PBR  /  2020.12  /  11.89
 
-    string_href = stock["href"] 
-    companyCode = string_href[string_href.find('=') + 1:]
+    financialData = []
+    stock_corp = getStockCropOfAll(KOSPI)
+    for index, stock in enumerate(stock_corp):
+        # a tag 내에서 "href" 속성값을 가져온다. 
+        link = "https://finance.naver.com/"+stock["href"]  
 
-    # 링크를 통해 우리가 원하는 기업별 데이터 페이지 데이터 크롤링     
-    sub_res = requests.get(link)
-    sub_soup = BeautifulSoup(sub_res.text, 'lxml')
-    
-    sub_thead = sub_soup.find("table", attrs={"class":"tb_type1 tb_num tb_type1_ifrs"})
-    listDate = []
-    if sub_thead is not None:
-        #sub_thead = sub_thead.find("thead").find_all("th", attrs={"scope":"col", "class":""})
-        sub_thead = sub_thead.find("thead").find("tr", attrs={"class": ""}).find_all("th", attrs={"scope":"col"})
-        # print ([i.get_text().strip() for i in sub_thead])
-        listDate = [i.get_text().strip() for i in sub_thead]
+        string_href = stock["href"] 
+        companyCode = string_href[string_href.find('=') + 1:]
 
-    ParamList = ['매출액', '영업이익', '당기순이익', 'ROE(지배주주)', 'PER(배)', 'PBR(배)']
-    ParamEngList = ['Sales', 'Operating_Profit', 'Current_Profit', 'ROE', 'PER', 'PBR']
-    for idx, pText in enumerate(ParamList):
-        param = " ".join(sub_soup.find('strong', string=pText).parent['class'])
-        sub_title, value_param = getDataOfParam(param, ParamEngList[idx])
-        # print(sub_title, " : ", value_param) 
+        # 링크를 통해 우리가 원하는 기업별 데이터 페이지 데이터 크롤링     
+        sub_res = requests.get(link)
+        sub_soup = BeautifulSoup(sub_res.text, 'lxml')
+        
+        sub_thead = sub_soup.find("table", attrs={"class":"tb_type1 tb_num tb_type1_ifrs"})
+        listDate = []
+        if sub_thead is not None:
+            #sub_thead = sub_thead.find("thead").find_all("th", attrs={"scope":"col", "class":""})
+            sub_thead = sub_thead.find("thead").find("tr", attrs={"class": ""}).find_all("th", attrs={"scope":"col"})
+            # print ([i.get_text().strip() for i in sub_thead])
+            listDate = [i.get_text().strip() for i in sub_thead]
 
-        for dateIdx, date in enumerate(listDate) :
-            if date != '' :
-                # print(companyCode, " / ", ParamEngList[idx], " / ", date, " / ", value_param[dateIdx])
-                tempFinancialData = {}
-                tempFinancialData['COMPANY_CODE'] = companyCode
-                tempFinancialData['ITEM_CODE'] = ParamEngList[idx]
-                tempFinancialData['DATE'] = date.replace('.', '')[0:6]
-                tempFinancialData['ITEM_VALUE'] = value_param[dateIdx]
-                financialData.append(tempFinancialData)
+        ParamList = ['매출액', '영업이익', '당기순이익', 'ROE(지배주주)', 'PER(배)', 'PBR(배)']
+        ParamEngList = ['SALES', 'OPERATION_PROFIT', 'CURRENT_PROFIT', 'ROE', 'PER', 'PBR']
+        for idx, pText in enumerate(ParamList):
+            param = " ".join(sub_soup.find('strong', string=pText).parent['class'])
+            sub_title, value_param = getDataOfParam(param, ParamEngList[idx])
+            # print(sub_title, " : ", value_param) 
 
-    if index >= 3 :
-        break
+            for dateIdx, date in enumerate(listDate) :
+                if date != '' :
+                    # print(companyCode, " / ", ParamEngList[idx], " / ", date, " / ", value_param[dateIdx])
+                    tempFinancialData = {}
+                    tempFinancialData['ITEM_CODE'] = companyCode
+                    tempFinancialData['DATA_TYPE'] = ParamEngList[idx]
+                    tempFinancialData['DATE'] = date.replace('.', '')[0:6]
+                    tempFinancialData['DATA_VALUE'] = value_param[dateIdx]
+                    financialData.append(tempFinancialData)
 
-print(financialData)
+        if index >= 3 :
+           break
+
+    print(financialData)
